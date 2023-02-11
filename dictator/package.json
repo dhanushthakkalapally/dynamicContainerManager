@@ -1,6 +1,7 @@
 {
   "scripts": {
-    "lint": "eslint . --fix"
+    "lint": "eslint . --fix",
+    "start": "ts-node src/app.ts"
   },
   "devDependencies": {
     "@tsconfig/node16": "^1.0.3",

@@ -1,8 +1,8 @@
 version: "3.9"
 services:
-  rabbitMq:
-    build: .
+  broker:
+    image: rabbitmq:3.10-management
     ports:
-      - "8000:5000"
-  redis:
-    image: "redis:alpine"
+      - 5672:5672
+      - 15672:15672
+    hostname: broker

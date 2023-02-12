@@ -1,0 +1,35 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: dcm-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: dcm
+  template:
+    metadata:
+      labels:
+        app: dcm
+    spec:
+      containers:
+      - name: my-container
+        image: dictator:latest
+        ports:
+        - containerPort: 3000
+        imagePullPolicy: Never
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: dynamic-container-manager-service
+spec:
+  selector:
+    app: dcm
+  ports:
+  - name: http
+    port: 80
+    targetPort: 3000
+  type: NodePort
+
+

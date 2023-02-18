@@ -31,30 +31,14 @@ export default {
           }
       },
       "queues": {
-        "q2": {
-          "assert": true,
-          "options": {
-            "durable": true
-          }
-        }
       },
       "bindings": {
-        "b1": {
-          "source": "commands",
-          "destination": "q2",
-          "destinationType": "queue",
-        }
       },
       "subscriptions": {
-        "s1": {
-          "queue": "q2",
-          "contentType": "application/json"
-        }
       },
       "publications": {
         "p1": {
-         "exchange": "commands",
-          "routingKey": "send_command"
+          "exchange": "notifications",
         }
       }
     }

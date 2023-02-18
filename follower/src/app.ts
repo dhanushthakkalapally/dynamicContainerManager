@@ -4,25 +4,36 @@ import {BrokerAsPromised as Broker, withDefaultConfig} from "rascal";
 // @ts-ignore
 import config from "../rascalConfig.ts";
 
-(async () => {
-  try {
-    const broker = await Broker.create(withDefaultConfig(config));
-    console.log("Process created and connected to the broker successfully!");
-    broker.on('error', (err) => {
-      console.log("here is the error");
-      console.error()
-    });
+const run_id = process.env["run_id"];
 
-    // Consume a message
-    setInterval(async () => {
-      const publication = await broker.publish("p1", {message: "Here is the message"});
-      publication.on("success", () => {
-        console.log("Successfully published the message!")
-      })
-    }, 3000)
+console.log(`🏃‍Run started with id ${run_id}`);
+console.log("Setting up rascal config for run");
+export const publishReadyMessage = async (runId: string, broker: Broker) => {
+    await new Promise(async (resolve, reject) => {
+        const publication = await broker.publish("p1", {message: "Here is the message"}, `run.${runId}.ready`);
+        publication.on("success", resolve)
+        publication.on("error", reject);
+    })
 
-  } catch (err) {
-    console.log("here is the error");
-    console.error(err);
-  }
-})();
+}
+
+if (!process.env["TEST"]) {
+    (async () => {
+        try {
+            const broker = await Broker.create(withDefaultConfig(config));
+            console.log("Process created and connected to the broker successfully! 🚀🚀");
+            broker.on('error', (err) => {
+                console.log("here is the error");
+                console.error(err);
+            });
+            if (run_id) {
+                await publishReadyMessage(run_id, broker);
+            } else {
+                throw new Error("run id must be provided");
+            }
+        } catch (err) {
+            console.log("here is the error");
+            console.error(err);
+        }
+    })();
+}

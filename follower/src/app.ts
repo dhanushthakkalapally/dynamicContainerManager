@@ -17,16 +17,39 @@ export const publishReadyMessage = async (runId: string, broker: Broker) => {
 
 }
 
+const getConfig = (runId: string) => {
+    config.vhosts["/"].queues[runId] = {
+        assert: true,
+        "options": {
+            durable: false,
+            exclusive: true
+        }
+    }
+    config.vhosts["/"].bindings[`${runId}_binding`] = {
+        source: "notifications",
+        destination: runId,
+        bindingKey: `${runId}.*`,
+    }
+    config.vhosts["/"].subscriptions[`${runId}_subscription`] = {
+        "queue": runId
+    }
+
+    return {...config}
+}
+
+
 if (!process.env["TEST"]) {
     (async () => {
         try {
-            const broker = await Broker.create(withDefaultConfig(config));
-            console.log("Process created and connected to the broker successfully! 🚀🚀");
-            broker.on('error', (err) => {
-                console.log("here is the error");
-                console.error(err);
-            });
             if (run_id) {
+                const runConfig = getConfig(run_id);
+                const broker = await Broker.create(withDefaultConfig(runConfig));
+                console.log("Process created and connected to the broker successfully! 🚀🚀");
+                broker.on('error', (err) => {
+                    console.log("here is the error");
+                    console.error(err);
+                });
+
                 await publishReadyMessage(run_id, broker);
             } else {
                 throw new Error("run id must be provided");

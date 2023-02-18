@@ -3,6 +3,7 @@ import {BrokerAsPromised as Broker, withDefaultConfig} from "rascal";
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore
 import config from "../rascalConfig.ts";
+import {createRunHandler} from "./handlers";
 
 const run_id = process.env["run_id"];
 
@@ -54,12 +55,18 @@ if (!process.env["TEST"]) {
 
                 const run_subscription = await broker.subscribe(`${run_id}_subscription`);
 
-                run_subscription.on("message", (message, content, ackOrNackFn) => {
+                run_subscription.on("message", async (message, content, ackOrNackFn) => {
                     const eventType = message.fields.routingKey.split(".")[1];
+                    const runId = message.fields.routingKey.split(".")[0];
                     switch (eventType) {
-
+                        case "start":
+                            const snippets = content["snippets"];
+                            await createRunHandler(runId, snippets, broker);
+                            ackOrNackFn();
+                            break;
+                        default:
+                            console.warn(`Unknown event provided ${eventType}`);
                     }
-
                     console.log("Hey here is the message", JSON.stringify(message));
                     ackOrNackFn();
                 });

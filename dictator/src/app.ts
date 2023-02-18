@@ -7,6 +7,7 @@ import Run from "../db/run";
 
 import express from "express";
 const app = express();
+console.log(Run);
 
 app.get('/', (req, res) => {
   res.send('Hello, world!');

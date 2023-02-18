@@ -43,6 +43,7 @@ export default {
           "source": "commands",
           "destination": "q1",
           "destinationType": "queue",
+          "bindingKey": "send_command"
         }
       },
       "subscriptions": {

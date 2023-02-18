@@ -15,3 +15,9 @@ services:
     environment:
       POSTGRES_PASSWORD: Dhanush97
       POSTGRES_USER: sanju
+
+  dictator:
+    build:
+      context: dictator/
+    ports:
+      - 3000:3000

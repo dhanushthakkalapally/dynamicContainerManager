@@ -3,7 +3,7 @@ import {BrokerAsPromised as Broker, withDefaultConfig} from "rascal";
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore
 import config from "../rascalConfig.ts";
-console.log(config);
+import Run from "../db/run";
 
 (async () => {
   try {

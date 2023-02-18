@@ -55,6 +55,11 @@ if (!process.env["TEST"]) {
                 const run_subscription = await broker.subscribe(`${run_id}_subscription`);
 
                 run_subscription.on("message", (message, content, ackOrNackFn) => {
+                    const eventType = message.fields.routingKey.split(".")[1];
+                    switch (eventType) {
+
+                    }
+
                     console.log("Hey here is the message", JSON.stringify(message));
                     ackOrNackFn();
                 });

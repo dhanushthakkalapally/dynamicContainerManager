@@ -18,7 +18,11 @@ export const createRunHandler = (runId: string, snippets: string, broker: Broker
     const newTempFunc = new Function(preparedSnippet);
 
     new Promise((resolve, reject) => {
-        setImmediate(() => {
+        setImmediate(async () => {
+            const publication = await broker.publish("p1", {message: "successfully started run execution :)"}, {routingKey: `run.${runId}.started`});
+            publication.on("success", () => {
+                console.log("Successfully finished run execution");
+            })
             newTempFunc();
             console.log("Successfully finished execution of the code")
             resolve("Finished execution successfully");

@@ -18,12 +18,11 @@ export const publishReadyMessage = async (runId: string, broker: Broker) => {
 
 }
 
-const getConfig = (runId: string) => {
+export const getConfig = (runId: string) => {
     config.vhosts["/"].queues[runId] = {
         assert: true,
         "options": {
-            durable: false,
-            exclusive: true
+            durable: false
         }
     }
     config.vhosts["/"].bindings[`${runId}_binding`] = {
@@ -59,7 +58,7 @@ if (!process.env["TEST"]) {
                     const eventType = message.fields.routingKey.split(".")[1];
                     const runId = message.fields.routingKey.split(".")[0];
                     switch (eventType) {
-                        case "start":
+                        case "createRun":
                             const snippets = content["snippets"];
                             await createRunHandler(runId, snippets, broker);
                             ackOrNackFn();

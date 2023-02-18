@@ -1,7 +1,8 @@
 {
   "scripts": {
     "lint": "eslint . --fix",
-    "start": "npx ts-node ./src/app.ts"
+    "start": "npx ts-node ./src/app.ts",
+    "test": "mocha --require ts-node/register tests/*.spec.ts"
   },
   "devDependencies": {
     "@tsconfig/node16": "^1.0.3",
@@ -14,6 +15,7 @@
     "@types/sinon": "^10.0.13",
     "@typescript-eslint/eslint-plugin": "^5.51.0",
     "@typescript-eslint/parser": "^5.51.0",
+    "@types/sinon-chai": "^3.2.9",
     "chai": "^4.3.7",
     "chai-as-promised": "^7.1.1",
     "eslint": "^8.34.0",
@@ -23,7 +25,6 @@
     "typescript": "^4.9.5"
   },
   "dependencies": {
-    "@types/sinon-chai": "^3.2.9",
     "amqplib": "^0.10.3",
     "rascal": "^16.3.0",
     "sinon-chai": "^3.7.0"

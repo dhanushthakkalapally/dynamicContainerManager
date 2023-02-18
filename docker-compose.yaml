@@ -6,3 +6,12 @@ services:
       - 5672:5672
       - 15672:15672
     hostname: broker
+
+  db:
+    image: postgres:latest
+    ports:
+      - 5432:5432
+    hostname: db
+    environment:
+      POSTGRES_PASSWORD: Dhanush97
+      POSTGRES_USER: sanju

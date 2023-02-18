@@ -12,7 +12,7 @@ chai.use(sinonChai)
 chai.use(chaiAsPromised);
 
 
-describe.only("handlers", () => {
+describe("handlers", () => {
     let broker: BrokerAsPromised;
 
     const testConfig = {

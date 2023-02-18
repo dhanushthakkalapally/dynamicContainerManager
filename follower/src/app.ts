@@ -51,6 +51,14 @@ if (!process.env["TEST"]) {
                 });
 
                 await publishReadyMessage(run_id, broker);
+
+                const run_subscription = await broker.subscribe(`${run_id}_subscription`);
+
+                run_subscription.on("message", (message, content, ackOrNackFn) => {
+                    console.log("Hey here is the message", JSON.stringify(message));
+                    ackOrNackFn();
+                });
+
             } else {
                 throw new Error("run id must be provided");
             }

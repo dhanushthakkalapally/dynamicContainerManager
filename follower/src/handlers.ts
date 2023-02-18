@@ -23,9 +23,14 @@ export const createRunHandler = (runId: string, snippets: string, broker: Broker
             publication.on("success", () => {
                 console.log("Successfully finished run execution");
             })
-            newTempFunc();
-            console.log("Successfully finished execution of the code")
-            resolve("Finished execution successfully");
+            try {
+                newTempFunc();
+                console.log("Successfully finished execution of the code")
+                resolve("Finished execution successfully");
+            } catch (e) {
+                console.error("something went wrong while running the run and the error is", e);
+            }
+
         })
     }).then(async () => {
         const publication = await broker.publish("p1", {message: "successfully finished run execution :)"}, {routingKey: `run.${runId}.finished`});

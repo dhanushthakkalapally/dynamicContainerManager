@@ -3,12 +3,11 @@ import {BrokerAsPromised as Broker, withDefaultConfig} from "rascal";
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore
 import config from "../rascalConfig.ts";
-console.log(config);
 
 (async () => {
   try {
     const broker = await Broker.create(withDefaultConfig(config));
-    console.log("Connected!");
+    console.log("Process created and connected to the broker successfully!");
     broker.on('error', (err) => {
       console.log("here is the error");
       console.error()

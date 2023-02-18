@@ -31,7 +31,8 @@ export const getConfig = (runId: string) => {
         bindingKey: `${runId}.*`,
     }
     config.vhosts["/"].subscriptions[`${runId}_subscription`] = {
-        "queue": runId
+        "queue": runId,
+        "contentType": "application/json"
     }
 
     return {...config}
@@ -59,7 +60,9 @@ if (!process.env["TEST"]) {
                     const runId = message.fields.routingKey.split(".")[0];
                     switch (eventType) {
                         case "createRun":
+                            console.log("here is the content", content);
                             const snippets = content["snippets"];
+                            console.log("here are the snippets", snippets);
                             await createRunHandler(runId, snippets, broker);
                             ackOrNackFn();
                             break;
@@ -67,7 +70,6 @@ if (!process.env["TEST"]) {
                             console.warn(`Unknown event provided ${eventType}`);
                     }
                     console.log("Hey here is the message", JSON.stringify(message));
-                    ackOrNackFn();
                 });
 
             } else {

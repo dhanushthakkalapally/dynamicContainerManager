@@ -5,6 +5,18 @@ import {BrokerAsPromised as Broker, withDefaultConfig} from "rascal";
 import config from "../rascalConfig.ts";
 import Run from "../db/run";
 
+import express from "express";
+const app = express();
+
+app.get('/', (req, res) => {
+  res.send('Hello, world!');
+});
+
+app.listen(3000, () => {
+  console.log('Server listening on port 3000');
+});
+
+
 (async () => {
   try {
     const broker = await Broker.create(withDefaultConfig(config));

@@ -21,3 +21,11 @@ services:
       context: dictator/
     ports:
       - 3000:3000
+
+  follower:
+    build:
+      context: follower/
+      dockerfile: DockerFile
+    environment:
+      run_id: new_run
+      AMQPURL: "amqp://broker:5672/"

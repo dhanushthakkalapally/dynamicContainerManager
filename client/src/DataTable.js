@@ -18,15 +18,20 @@ function MaterialTable() {
     // const classes = useStyles();
     const [data, setData] = useState([]);
 
-    useEffect(() => {
+    const getData = () => {
         fetch('http://localhost:8000/api/runs')
             .then(response => response.json())
             .then(data => setData(data));
+    }
+
+    useEffect(() => {
+        getData()
+        setInterval(getData, 5000);
     }, []);
 
     return (
         <TableContainer component={Paper}>
-            <Table  aria-label="simple table">
+            <Table aria-label="simple table">
                 <TableHead>
                     <TableRow>
                         <TableCell>ID</TableCell>

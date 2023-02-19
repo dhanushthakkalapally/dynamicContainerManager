@@ -1,5 +1,5 @@
 import './App.css';
-import {AppBar, CssBaseline, Toolbar, Typography} from "@mui/material";
+import {AppBar, CssBaseline, Grid, Toolbar, Typography} from "@mui/material";
 import Snippet from "./Snippet";
 import DataTable from "./DataTable";
 
@@ -12,10 +12,9 @@ function App() {
                     <Typography variant="h6">Dashboard</Typography>
                 </Toolbar>
             </AppBar>
-
-            <Typography variant={"h4"}>Welcome! </Typography>
-
+            <Grid padding={5}>
             <Snippet/>
+            </Grid>
             <DataTable/>
         </>
     );

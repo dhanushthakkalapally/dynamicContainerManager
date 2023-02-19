@@ -10,7 +10,7 @@ export const createRun = async (status: string, snippet: string) => {
     return await Run.create({status: status, snippet: snippet});
 }
 
-export const updateContainerName = async (runId: number, containerName: string) => {
+export const updateContainerName = async (runId: string, containerName: string) => {
     const run = await Run.findByPk(runId);
     if (run) {
         run.containerName = containerName;
@@ -21,10 +21,10 @@ export const updateContainerName = async (runId: number, containerName: string) 
     }
 }
 
-export const updateStatus = async (runId: number, status: string) => {
+export const updateStatus = async (runId: string, status: string) => {
     const run = await Run.findByPk(runId);
     if (run) {
-        run.containerName = status;
+        run.status = status;
         await run.save();
         return run;
     } else {
@@ -33,7 +33,7 @@ export const updateStatus = async (runId: number, status: string) => {
 }
 
 
-export const getRunById = async (runId: number) => {
+export const getRunById = async (runId: string) => {
     const run = await Run.findByPk(runId);
     if (!run) {
         throw new Error("Run Not Found!");

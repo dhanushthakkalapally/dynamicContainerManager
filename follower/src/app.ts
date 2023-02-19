@@ -8,7 +8,7 @@ import {createRunHandler} from "./handlers";
 const config = require("../rascalConfig");
 const run_id = process.env["run_id"];
 
-setInterval(() => console.log("here is the memory consumption stats", process.memoryUsage()), 2000);
+// setInterval(() => console.log("here is the memory consumption stats", process.memoryUsage()), 2000);
 
 console.log(`🏃‍Run started with id ${run_id}`);
 console.log("Setting up rascal config for run");
@@ -17,6 +17,7 @@ export const publishReadyMessage = async (runId: string, broker: Broker) => {
         const publication = await broker.publish("p1", {message: "Here is the message"}, `run.${runId}.ready`);
         publication.on("success", () => {
             console.log("published ready message successfully...");
+            resolve("finished");
         })
         publication.on("error", reject);
     })
@@ -33,6 +34,7 @@ export const getConfig = (runId: string) => {
     config.vhosts["/"].bindings[`${runId}_binding`] = {
         source: "notifications",
         destination: runId,
+        "destinationType": "queue",
         bindingKey: `${runId}.*`,
     }
     config.vhosts["/"].subscriptions[`${runId}_subscription`] = {
@@ -49,6 +51,7 @@ if (!process.env["TEST"]) {
         try {
             if (run_id) {
                 const runConfig = getConfig(run_id);
+                console.log("here is the config", JSON.stringify(runConfig));
                 const broker = await Broker.create(withDefaultConfig(runConfig));
                 console.log("Process created and connected to the broker successfully! 🚀🚀");
                 broker.on('error', (err) => {
@@ -57,6 +60,8 @@ if (!process.env["TEST"]) {
                 });
 
                 await publishReadyMessage(run_id, broker);
+
+                console.log("I am here for you man");
 
                 const run_subscription = await broker.subscribe(`${run_id}_subscription`);
 

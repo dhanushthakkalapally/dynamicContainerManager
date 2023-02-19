@@ -1,10 +1,9 @@
-
-import { Sequelize, DataTypes, Model } from "sequelize";
+import {DataTypes, Model} from "sequelize";
 import sequelize from "./setup";
 
 class Run extends Model {
 
-    declare id: number;
+    declare id: string;
 
     declare status: string;
 
@@ -16,10 +15,10 @@ class Run extends Model {
 Run.init({
   // Model attributes are defined here
     id: {
-    type: DataTypes.INTEGER,
-    autoIncrement: true,
-    primaryKey: true
-  },
+        type: DataTypes.UUID,
+        defaultValue: DataTypes.UUIDV4,
+        primaryKey: true
+    },
     status: {
         type: DataTypes.STRING,
         allowNull: false,

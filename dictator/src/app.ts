@@ -80,37 +80,44 @@ app.listen(8000, () => {
     const subscription = await broker.subscribe('run_subscription');
     subscription
         .on('message', async (message, content, ackOrNack) => {
-          const [runId, eventType] = message.fields.routingKey.split(".");
+          const [_, runId, eventType] = message.fields.routingKey.split(".");
           let run: Run;
           switch (eventType) {
             case "ready":
               //    now the container is ready now let's start the container and run the run
-              run = await getRunById(parseInt(runId));
+              run = await getRunById(runId);
               const publication = await broker.publish("run_publication", {"snippets": run.snippet}, {routingKey: `${runId}.createRun`});
               publication.on("success", async () => {
-                await updateStatus(parseInt(runId), "started");
+                await updateStatus(runId, "started");
                 console.log("Successfully started the run");
               });
               break;
             case "finished":
-              //    now the run is done; we need to delete the container.
-              run = await getRunById(parseInt(runId));
-              docker.getContainer(run.containerName).remove(async (err, data) => {
-                if (err) {
-                  console.log(err);
-                  console.log("something went wrong while deleting the container");
-                } else {
-                  console.log(data);
-                  await updateStatus(run.id, "finished");
-                }
-              });
+            case "failed":
+                 // now the run is done; we need to delete the container.
+              run = await getRunById(runId);
+              console.log(content);
+              try {
+                const container = docker.getContainer(run.containerName);
+                await container.stop();
+                console.log('Container stopped');
+                await container.remove();
+                console.log('Container removed');
+                 await updateStatus(run.id, eventType);
+              } catch (err) {
+                console.log('Error stopping or removing container:', err);
+              }
+              break;
+
+            default:
+              console.warn("Unknown error")
           }
           ackOrNack();
         })
       .on('error', (err) => {
-      console.log("here is the error");
-      console.error()
-    });
+        console.log("here is the error");
+        console.error(err)
+      });
   } catch (err) {
     console.log("here is the error");
     console.error(err);

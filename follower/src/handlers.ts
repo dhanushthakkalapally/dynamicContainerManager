@@ -34,6 +34,7 @@ export const createRunHandler = (runId: string, snippets: string, broker: Broker
                 const publication = await broker.publish("p1", {message: JSON.stringify(e.stack)}, {routingKey: `run.${runId}.failed`});
                 publication.on("success", () => {
                     console.log("Successfully published failed message execution");
+                    process.exit(0);
                 })
             }
 
@@ -45,6 +46,7 @@ export const createRunHandler = (runId: string, snippets: string, broker: Broker
         }, {routingKey: `run.${runId}.finished`});
         publication.on("success", () => {
             console.log("Successfully finished run execution");
+            process.exit(0);
         })
     });
 }

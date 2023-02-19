@@ -1,17 +1,16 @@
-import React, { useState } from 'react';
-import { TextField, Button } from "@mui/material";
+import React, {useState} from 'react';
+import {Button, TextField} from "@mui/material";
 
 function Snippet() {
   const [value, setValue] = useState('');
 
   const handleSubmit = (event) => {
     event.preventDefault();
-    fetch('/api/my-endpoint', {
-      method: 'POST',
-      headers: {
+    fetch('http://localhost:8000/api/runs', {
+      method: 'POST', headers: {
         'Content-Type': 'application/json'
       },
-      body: JSON.stringify({ content: value })
+      body: JSON.stringify({ snippet: value })
     }).then((response) => {
       if (!response.ok) {
         throw new Error('Network response was not ok');

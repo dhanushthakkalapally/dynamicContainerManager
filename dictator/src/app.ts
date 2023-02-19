@@ -4,10 +4,13 @@ import {BrokerAsPromised as Broker, withDefaultConfig} from "rascal";
 // @ts-ignore
 import config from "../rascalConfig.ts";
 import {createRun} from "./dao/runDAO";
+import cors from "cors";
 
 import express from "express";
 const app = express();
 app.use(express.json());
+
+app.use(cors());
 
 
 app.get('/', (req, res) => {
@@ -24,8 +27,8 @@ app.post("/api/runs", async (req, res) => {
   res.status(201).send("Successes fully initiated the run");
 });
 
-app.listen(3000, () => {
-  console.log('Server listening on port 3000');
+app.listen(8000, () => {
+  console.log('Server listening on port 8000');
 });
 
 

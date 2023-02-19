@@ -41,3 +41,7 @@ export const getRunById = async (runId: string) => {
     }
     return run;
 }
+
+export const getRuns = async () => {
+   return await Run.findAll();
+}

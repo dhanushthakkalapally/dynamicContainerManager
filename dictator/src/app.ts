@@ -3,7 +3,7 @@ import Docker from "dockerode";
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore
 import config from "../rascalConfig.ts";
-import {createRun, getRunById, updateContainerNameAndContainerId, updateStatus} from "./dao/runDAO";
+import {createRun, getRunById, getRuns, updateContainerNameAndContainerId, updateStatus} from "./dao/runDAO";
 import cors from "cors";
 
 import express from "express";
@@ -61,6 +61,11 @@ app.post("/api/runs", async (req, res) => {
   });
 
   res.status(201).send("Successes fully initiated the run");
+});
+
+app.get("/api/runs", async (req, res) => {
+  const runs = await getRuns();
+  res.status(200).send(runs);
 });
 
 app.listen(8000, () => {

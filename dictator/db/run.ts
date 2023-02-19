@@ -9,6 +9,8 @@ class Run extends Model {
     declare status: string;
 
     declare snippet: string;
+
+    declare containerName: string;
 }
 
 Run.init({
@@ -25,6 +27,10 @@ Run.init({
     snippet : {
         type: DataTypes.TEXT,
         allowNull: false
+    },
+    containerName: {
+        type: DataTypes.STRING,
+        allowNull: true
     }
 }, {
   // Other model options go here

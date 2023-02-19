@@ -3,10 +3,11 @@ import Docker from "dockerode";
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore
 import config from "../rascalConfig.ts";
-import {createRun} from "./dao/runDAO";
+import {createRun, getRunById, updateContainerName, updateStatus} from "./dao/runDAO";
 import cors from "cors";
 
 import express from "express";
+import Run from "../db/run";
 
 const docker = new Docker();
 
@@ -41,16 +42,18 @@ app.post("/api/runs", async (req, res) => {
   };
 
   docker.createContainer(config, function (err, container) {
-    if (err) {
+    if (err || !container) {
       console.error(err);
     } else {
       // Start the container
       // eslint-disable-next-line @typescript-eslint/ban-ts-comment
       // @ts-ignore
-      container.start(function (err, data) {
+      container.start(async function (err, data) {
         if (err) {
           console.error(err);
         } else {
+          await updateContainerName(run.id, container.id);
+          console.log("update container name");
           console.log('Container started successfully');
         }
       });
@@ -70,17 +73,40 @@ app.listen(8000, () => {
     const broker = await Broker.create(withDefaultConfig(config));
     console.log("Connected!");
     broker.on('error', (err) => {
-      console.log("here is the error");
-      console.error()
+      console.error(err)
     });
 
     // Consume a message
-    const subscription = await broker.subscribe('s1');
+    const subscription = await broker.subscribe('run_subscription');
     subscription
-      .on('message', (message, content, ackOrNack) => {
-        console.log(content);
-        ackOrNack();
-      })
+        .on('message', async (message, content, ackOrNack) => {
+          const [runId, eventType] = message.fields.routingKey.split(".");
+          let run: Run;
+          switch (eventType) {
+            case "ready":
+              //    now the container is ready now let's start the container and run the run
+              run = await getRunById(parseInt(runId));
+              const publication = await broker.publish("run_publication", {"snippets": run.snippet}, {routingKey: `${runId}.createRun`});
+              publication.on("success", async () => {
+                await updateStatus(parseInt(runId), "started");
+                console.log("Successfully started the run");
+              });
+              break;
+            case "finished":
+              //    now the run is done; we need to delete the container.
+              run = await getRunById(parseInt(runId));
+              docker.getContainer(run.containerName).remove(async (err, data) => {
+                if (err) {
+                  console.log(err);
+                  console.log("something went wrong while deleting the container");
+                } else {
+                  console.log(data);
+                  await updateStatus(run.id, "finished");
+                }
+              });
+          }
+          ackOrNack();
+        })
       .on('error', (err) => {
       console.log("here is the error");
       console.error()

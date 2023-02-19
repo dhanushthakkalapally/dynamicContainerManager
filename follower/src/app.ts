@@ -15,7 +15,9 @@ console.log("Setting up rascal config for run");
 export const publishReadyMessage = async (runId: string, broker: Broker) => {
     await new Promise(async (resolve, reject) => {
         const publication = await broker.publish("p1", {message: "Here is the message"}, `run.${runId}.ready`);
-        publication.on("success", resolve)
+        publication.on("success", () => {
+            console.log("published ready message successfully...");
+        })
         publication.on("error", reject);
     })
 

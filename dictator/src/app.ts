@@ -111,8 +111,6 @@ app.listen(8000, () => {
               const duration = content["runDuration"] || 0
               try {
                 const container = docker.getContainer(run.containerId);
-                await container.stop();
-                console.log('Container stopped');
                 await container.remove();
                 console.log('Container removed');
                  await updateStatusAndDuration(run.id, eventType, parseFloat(duration));

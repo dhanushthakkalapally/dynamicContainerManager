@@ -1,4 +1,4 @@
-FROM node:lts-alpine
+FROM node:lts-slim
 
 WORKDIR /app
 
@@ -7,5 +7,7 @@ COPY package*.json ./
 RUN npm install --production
 
 COPY . .
+
+RUN npx tsc
 
 CMD ["npm", "start"]

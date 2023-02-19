@@ -1,12 +1,13 @@
 import {BrokerAsPromised as Broker, withDefaultConfig} from "rascal";
 
+
+
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore
-import {createRunHandler} from "./handlers";
-
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const config = require("../rascalConfig");
 const run_id = process.env["run_id"];
+import {createRunHandler} from "./handlers";
 
 // setInterval(() => console.log("here is the memory consumption stats", process.memoryUsage()), 2000);
 

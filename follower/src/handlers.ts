@@ -1,13 +1,15 @@
 import {BrokerAsPromised} from "rascal";
 
 const getPreparedSnippet = (snippets: string) => {
-    return `
+    return `(async() => {
     try {
         ${snippets}
-        main();
+        await main();
+        resolve();
     } catch (err) {
         throw new Error(err);
     }
+    })();
     `
 }
 
@@ -15,7 +17,7 @@ export const createRunHandler = (runId: string, snippets: string, broker: Broker
     console.log(`Running the snippets for runId ${runId}`);
     const preparedSnippet = getPreparedSnippet(snippets);
 
-    const newTempFunc = new Function(preparedSnippet);
+    // const newTempFunc = new Function(preparedSnippet);
 
     new Promise((resolve, reject) => {
         setImmediate(async () => {
@@ -24,7 +26,9 @@ export const createRunHandler = (runId: string, snippets: string, broker: Broker
                 console.log("Successfully finished run execution");
             })
             try {
-                newTempFunc();
+                await new Promise(async (resolve) => {
+                    await eval(getPreparedSnippet(snippets));
+                });
                 console.log("Successfully finished execution of the code")
                 resolve("Finished execution successfully");
             } catch (e) {

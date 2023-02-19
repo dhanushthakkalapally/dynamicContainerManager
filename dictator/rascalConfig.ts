@@ -2,7 +2,7 @@ export default {
   "vhosts": {
     "/": {
       "connection": {
-        "url": "amqp://broker:5672/",
+        "url": process.env.AMQPURL || "amqp://localhost:5672/",
         "options": {
           "heartbeat": 5
         },
@@ -31,7 +31,7 @@ export default {
           }
       },
       "queues": {
-        "q1": {
+        "run_queue": {
           "assert": true,
           "options": {
             "durable": true
@@ -39,17 +39,22 @@ export default {
         }
       },
       "bindings": {
-        "b1": {
-          "source": "commands",
-          "destination": "q1",
+        "run_binding": {
+          "source": "notifications",
+          "destination": "run_queue",
           "destinationType": "queue",
-          "bindingKey": "send_command"
+          "bindingKey": "run.*.*"
         }
       },
       "subscriptions": {
-        "s1": {
-          "queue": "q1",
+        "run_subscription": {
+          "queue": "run_queue",
           "contentType": "application/json"
+        }
+      },
+      "publications": {
+        "run_publication": {
+          "exchange": "notifications"
         }
       }
     }

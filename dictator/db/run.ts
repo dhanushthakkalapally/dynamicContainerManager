@@ -1,20 +1,42 @@
-
-import { Sequelize, DataTypes, Model } from "sequelize";
+import {DataTypes, Model} from "sequelize";
 import sequelize from "./setup";
 
-class Run extends Model {}
+class Run extends Model {
+
+    declare id: string;
+
+    declare status: string;
+
+    declare snippet: string;
+
+    declare containerName: string;
+
+    declare containerId: string;
+}
 
 Run.init({
   // Model attributes are defined here
     id: {
-    type: DataTypes.INTEGER,
-    autoIncrement: true,
-    primaryKey: true
-  },
-  isActive: {
-    type: DataTypes.BOOLEAN,
-    allowNull: false
-  },
+        type: DataTypes.UUID,
+        defaultValue: DataTypes.UUIDV4,
+        primaryKey: true
+    },
+    status: {
+        type: DataTypes.STRING,
+        allowNull: false,
+    },
+    snippet : {
+        type: DataTypes.TEXT,
+        allowNull: false
+    },
+    containerName: {
+        type: DataTypes.STRING,
+        allowNull: true
+    },
+    containerId: {
+        type: DataTypes.STRING,
+        allowNull: true
+    }
 }, {
   // Other model options go here
   sequelize, // We need to pass the connection instance

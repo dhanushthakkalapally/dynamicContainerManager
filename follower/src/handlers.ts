@@ -29,6 +29,10 @@ export const createRunHandler = (runId: string, snippets: string, broker: Broker
                 resolve("Finished execution successfully");
             } catch (e) {
                 console.error("something went wrong while running the run and the error is", e);
+                const publication = await broker.publish("p1", {message: JSON.stringify(e)}, {routingKey: `run.${runId}.failed`});
+                 publication.on("success", () => {
+                console.log("Successfully published failed message execution");
+            })
             }
 
         })

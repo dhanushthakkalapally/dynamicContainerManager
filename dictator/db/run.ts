@@ -11,10 +11,14 @@ Run.init({
     autoIncrement: true,
     primaryKey: true
   },
-  isActive: {
-    type: DataTypes.BOOLEAN,
-    allowNull: false
-  },
+    status: {
+        type: DataTypes.STRING,
+        allowNull: false,
+    },
+    snippet : {
+        type: DataTypes.STRING,
+        allowNull: false
+    }
 }, {
   // Other model options go here
   sequelize, // We need to pass the connection instance

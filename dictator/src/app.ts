@@ -3,14 +3,25 @@ import {BrokerAsPromised as Broker, withDefaultConfig} from "rascal";
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore
 import config from "../rascalConfig.ts";
-import Run from "../db/run";
+import {createRun} from "./dao/runDAO";
 
 import express from "express";
 const app = express();
-console.log(Run);
+app.use(express.json());
+
 
 app.get('/', (req, res) => {
   res.send('Hello, world!');
+});
+
+app.post("/api/runs", async (req, res) => {
+  const { snippet } = req.body;
+
+  await createRun("initiated", snippet);
+
+  // TODO: Here we need to start the follower container in the k8s and send the snippets that is just received.
+
+  res.status(201).send("Successes fully initiated the run");
 });
 
 app.listen(3000, () => {

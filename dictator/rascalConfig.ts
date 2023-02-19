@@ -2,7 +2,7 @@ export default {
   "vhosts": {
     "/": {
       "connection": {
-        "url": "amqp://broker:5672/",
+        "url": process.env.AMQPURL || "amqp://localhost:5672/",
         "options": {
           "heartbeat": 5
         },

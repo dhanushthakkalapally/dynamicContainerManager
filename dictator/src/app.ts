@@ -3,7 +3,14 @@ import Docker from "dockerode";
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore
 import config from "../rascalConfig.ts";
-import {createRun, getRunById, getRuns, updateContainerNameAndContainerId, updateStatus} from "./dao/runDAO";
+import {
+  createRun,
+  getRunById,
+  getRuns,
+  updateContainerNameAndContainerId,
+  updateStatus,
+  updateStatusAndDuration
+} from "./dao/runDAO";
 import cors from "cors";
 
 import express from "express";
@@ -101,14 +108,14 @@ app.listen(8000, () => {
             case "failed":
                  // now the run is done; we need to delete the container.
               run = await getRunById(runId);
-              console.log(content);
+              const duration = content["runDuration"] || 0
               try {
                 const container = docker.getContainer(run.containerId);
                 await container.stop();
                 console.log('Container stopped');
                 await container.remove();
                 console.log('Container removed');
-                 await updateStatus(run.id, eventType);
+                 await updateStatusAndDuration(run.id, eventType, parseFloat(duration));
               } catch (err) {
                 console.log('Error stopping or removing container:', err);
               }

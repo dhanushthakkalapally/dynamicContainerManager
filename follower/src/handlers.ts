@@ -15,9 +15,6 @@ const getPreparedSnippet = (snippets: string) => {
 
 export const createRunHandler = (runId: string, snippets: string, broker: BrokerAsPromised) => {
     console.log(`Running the snippets for runId ${runId}`);
-    const preparedSnippet = getPreparedSnippet(snippets);
-
-    // const newTempFunc = new Function(preparedSnippet);
 
     new Promise((resolve, reject) => {
         setImmediate(async () => {
@@ -25,23 +22,27 @@ export const createRunHandler = (runId: string, snippets: string, broker: Broker
             publication.on("success", () => {
                 console.log("Successfully finished run execution");
             })
+            const startTime = performance.now();
             try {
                 await new Promise(async (resolve) => {
                     await eval(getPreparedSnippet(snippets));
                 });
                 console.log("Successfully finished execution of the code")
-                resolve("Finished execution successfully");
-            } catch (e) {
+                resolve(performance.now() - startTime);
+            } catch (e: any) {
                 console.error("something went wrong while running the run and the error is", e);
-                const publication = await broker.publish("p1", {message: JSON.stringify(e)}, {routingKey: `run.${runId}.failed`});
-                 publication.on("success", () => {
-                console.log("Successfully published failed message execution");
-            })
+                const publication = await broker.publish("p1", {message: JSON.stringify(e.stack)}, {routingKey: `run.${runId}.failed`});
+                publication.on("success", () => {
+                    console.log("Successfully published failed message execution");
+                })
             }
 
         })
-    }).then(async () => {
-        const publication = await broker.publish("p1", {message: "successfully finished run execution :)"}, {routingKey: `run.${runId}.finished`});
+    }).then(async (runDuration) => {
+        const publication = await broker.publish("p1", {
+            message: "successfully finished run execution :)",
+            runDuration
+        }, {routingKey: `run.${runId}.finished`});
         publication.on("success", () => {
             console.log("Successfully finished run execution");
         })

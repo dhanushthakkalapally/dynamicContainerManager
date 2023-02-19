@@ -41,6 +41,7 @@ function MaterialTable() {
                         <TableCell>Container ID</TableCell>
                         <TableCell>Created At</TableCell>
                         <TableCell>Updated At</TableCell>
+                        <TableCell>Run Duration</TableCell>
                     </TableRow>
                 </TableHead>
                 <TableBody>
@@ -53,6 +54,7 @@ function MaterialTable() {
                             <TableCell>{row.containerId}</TableCell>
                             <TableCell>{row.createdAt}</TableCell>
                             <TableCell>{row.updatedAt}</TableCell>
+                            <TableCell>{row.duration}</TableCell>
                         </TableRow>
                     ))}
                 </TableBody>

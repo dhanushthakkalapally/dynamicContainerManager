@@ -33,6 +33,18 @@ export const updateStatus = async (runId: string, status: string) => {
     }
 }
 
+export const updateStatusAndDuration = async (runId: string, status: string, duration: number) => {
+    const run = await Run.findByPk(runId);
+    if (run) {
+        run.status = status;
+        run.duration = duration;
+        await run.save();
+        return run;
+    } else {
+        throw new Error("Run Not Found!");
+    }
+}
+
 
 export const getRunById = async (runId: string) => {
     const run = await Run.findByPk(runId);

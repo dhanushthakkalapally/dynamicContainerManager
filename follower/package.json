@@ -1,7 +1,8 @@
 {
   "scripts": {
     "lint": "eslint . --fix",
-    "start": "npx ts-node ./src/app.ts",
+    "start-dev": "npx ts-node ./src/app.ts",
+    "start": "node --max-old-space-size=128 ./dist/app.js",
     "test": "mocha --require ts-node/register tests/*.spec.ts"
   },
   "devDependencies": {

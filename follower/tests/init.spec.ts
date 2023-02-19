@@ -4,7 +4,7 @@ import chaiAsPromised from "chai-as-promised";
 import {v4} from "uuid"
 import {BrokerAsPromised, withTestConfig} from "rascal";
 import _ from "lodash";
-import rascalConfig from "../rascalConfig";
+import rascalConfig from "../rascalConfig.js";
 import {publishReadyMessage} from "../src/app";
 
 const {expect} = chai;

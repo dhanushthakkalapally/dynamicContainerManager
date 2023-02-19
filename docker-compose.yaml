@@ -26,6 +26,8 @@ services:
     build:
       context: follower/
       dockerfile: DockerFile
+    mem_limit: 256m
+    mem_reservation: 128m
     environment:
       run_id: new_run
       AMQPURL: "amqp://broker:5672/"

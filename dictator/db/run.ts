@@ -2,7 +2,14 @@
 import { Sequelize, DataTypes, Model } from "sequelize";
 import sequelize from "./setup";
 
-class Run extends Model {}
+class Run extends Model {
+
+    declare id: number;
+
+    declare status: string;
+
+    declare snippet: string;
+}
 
 Run.init({
   // Model attributes are defined here
@@ -16,7 +23,7 @@ Run.init({
         allowNull: false,
     },
     snippet : {
-        type: DataTypes.STRING,
+        type: DataTypes.TEXT,
         allowNull: false
     }
 }, {

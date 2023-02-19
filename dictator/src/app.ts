@@ -3,7 +3,7 @@ import Docker from "dockerode";
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore
 import config from "../rascalConfig.ts";
-import {createRun, getRunById, updateContainerName, updateStatus} from "./dao/runDAO";
+import {createRun, getRunById, updateContainerNameAndContainerId, updateStatus} from "./dao/runDAO";
 import cors from "cors";
 
 import express from "express";
@@ -30,10 +30,10 @@ app.post("/api/runs", async (req, res) => {
     'AMQPURL=amqp://broker:5672/',
     `run_id=${run.id}`,
   ];
-
+  const containerName = `follower_${run.id}`;
   const config = {
     Image: 'dynamiccontainermanager_follower',
-    name: `follower_${run.id}`,
+    name: containerName,
     HostConfig: {
       PortBindings: {'80/tcp': [{HostPort: '8080'}]},
       NetworkMode: "dynamiccontainermanager_default"
@@ -52,8 +52,8 @@ app.post("/api/runs", async (req, res) => {
         if (err) {
           console.error(err);
         } else {
-          await updateContainerName(run.id, container.id);
-          console.log("update container name");
+          await updateContainerNameAndContainerId(run.id, containerName, container.id);
+          console.log("update container name and container id");
           console.log('Container started successfully');
         }
       });
@@ -98,7 +98,7 @@ app.listen(8000, () => {
               run = await getRunById(runId);
               console.log(content);
               try {
-                const container = docker.getContainer(run.containerName);
+                const container = docker.getContainer(run.containerId);
                 await container.stop();
                 console.log('Container stopped');
                 await container.remove();

@@ -10,10 +10,11 @@ export const createRun = async (status: string, snippet: string) => {
     return await Run.create({status: status, snippet: snippet});
 }
 
-export const updateContainerName = async (runId: string, containerName: string) => {
+export const updateContainerNameAndContainerId = async (runId: string, containerName: string, containerId: string) => {
     const run = await Run.findByPk(runId);
     if (run) {
         run.containerName = containerName;
+        run.containerId = containerId
         await run.save();
         return run;
     } else {

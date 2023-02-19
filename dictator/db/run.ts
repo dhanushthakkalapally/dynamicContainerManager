@@ -10,6 +10,8 @@ class Run extends Model {
     declare snippet: string;
 
     declare containerName: string;
+
+    declare containerId: string;
 }
 
 Run.init({
@@ -28,6 +30,10 @@ Run.init({
         allowNull: false
     },
     containerName: {
+        type: DataTypes.STRING,
+        allowNull: true
+    },
+    containerId: {
         type: DataTypes.STRING,
         allowNull: true
     }

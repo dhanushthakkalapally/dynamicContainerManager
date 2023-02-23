@@ -70,6 +70,27 @@ app.post("/api/runs", async (req, res) => {
   res.status(201).send("Successes fully initiated the run");
 });
 
+app.put("/api/runs/:run_id", async (req, res) => {
+  const run = await getRunById(req.params.run_id);
+  // const duration = content["runDuration"] || 0
+  if (run.status === "started") {
+    try {
+      const container = docker.getContainer(run.containerId);
+      await container.stop();
+      console.log('Container stopped');
+      await container.remove();
+      console.log('Container removed');
+      await updateStatusAndDuration(run.id, "stopped", 0);
+      res.status(200).send({message: "Stopped the run successfully"});
+
+    } catch (err) {
+      console.log('Error stopping or removing container:', err);
+    }
+  } else {
+    res.status(400).send({message: "Cannot stop a not running run"});
+  }
+})
+
 app.get("/api/runs", async (req, res) => {
   const runs = await getRuns();
   res.status(200).send(runs);

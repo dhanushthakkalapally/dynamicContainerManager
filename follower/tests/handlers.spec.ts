@@ -62,13 +62,24 @@ describe("handlers", () => {
             const runId = "dummy_run_id";
 
             const snippet = `
-            function main() {
-               let count = 100;
-               while (count > 0) {
-                   console.log("Dhanush I Love you 😘😘😘😘😘, I think it will work");
-                   count--;
-               }
-            }
+            function sleep() {
+  return new Promise(resolve => setTimeout(resolve, 1000));
+}
+
+function main() {
+  let promise = Promise.resolve();
+
+  for (let i = 1; i <= 5; i++) {
+    promise = promise.then(() => {
+      console.log(\`Iteration \${i}: before sleep\`);
+      return sleep(); 
+    }).then(() => {
+      console.log(\`Iteration \${i}: after sleep\`);
+    });
+  }
+
+  return promise;
+}
         `
             broker = await BrokerAsPromised.create(withTestConfig(_.defaultsDeep(testConfig, getConfig(runId))));
 

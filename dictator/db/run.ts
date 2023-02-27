@@ -12,6 +12,8 @@ class Run extends Model {
     declare containerName: string;
 
     declare containerId: string;
+
+    declare duration: number;
 }
 
 Run.init({
@@ -36,6 +38,10 @@ Run.init({
     containerId: {
         type: DataTypes.STRING,
         allowNull: true
+    },
+    duration: {
+        type: DataTypes.DECIMAL,
+        defaultValue: 0
     }
 }, {
   // Other model options go here
